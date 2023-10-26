@@ -1,0 +1,4 @@
+{"Id": str(sensor1Id),
+"Location" : location1,
+"Unit" : unity,
+"Value": value1}

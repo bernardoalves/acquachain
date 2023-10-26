@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERC20 with Vanilla JS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.0/ethers.umd.min.js" type="module"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">   
+</head>
+<body>
+<h1>Acqua Token</h1>
+<div>
+    <h2 id="balance">Your Balance: </h2>
+    <h2 id="totalSupply">Total Supply: </h2>
+</div>
+
+
+<h1>Acqua Dashboard</h1>
+<div>
+    <h2 id="remaining">Remaning: </h2>
+    <h2 id="pullDataByCompany">Data: </h2>
+</div>
+
+<script>
+    let provider;
+    let signer;
+    let contract;
+
+    const contractAddress = '0x9AeFc71ca54a7752CC3A00362b7F0CAa8E69b959';
+    const acquaDashboardAddress = '0x54b2749d9eF694f815C760f6A2BB5963e7670231';
+    const erc20Abi = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}];
+    const dashboardAbi = [{"inputs":[{"internalType":"address","name":"_acquaAddress","type":"address"},{"internalType":"address","name":"_government","type":"address"},{"internalType":"string[]","name":"_sites","type":"string[]"},{"internalType":"uint256[]","name":"_benchmarks","type":"uint256[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"company","type":"address"},{"indexed":false,"internalType":"string","name":"sensorID","type":"string"},{"indexed":false,"internalType":"string","name":"message","type":"string"}],"name":"PushData","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"companies","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"companyToSensorData","outputs":[{"internalType":"string","name":"sensorID","type":"string"},{"internalType":"string","name":"siteID","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"enum AcquaDashboard.Unit","name":"unit","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"a","type":"string"},{"internalType":"string","name":"b","type":"string"}],"name":"compareStrings","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"governmentAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_companyAddress","type":"address"}],"name":"pullDataByCompany","outputs":[{"components":[{"internalType":"string","name":"sensorID","type":"string"},{"internalType":"string","name":"siteID","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"enum AcquaDashboard.Unit","name":"unit","type":"uint8"}],"internalType":"struct AcquaDashboard.SensorData[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_sensorID","type":"string"}],"name":"pullDataBySensorID","outputs":[{"components":[{"internalType":"string","name":"sensorID","type":"string"},{"internalType":"string","name":"siteID","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"enum AcquaDashboard.Unit","name":"unit","type":"uint8"}],"internalType":"struct AcquaDashboard.SensorData[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_sensorID","type":"string"},{"internalType":"string","name":"_siteID","type":"string"},{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"string","name":"_unit","type":"string"}],"name":"pushData","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"remaining","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"sensorIDToSensorData","outputs":[{"internalType":"string","name":"sensorID","type":"string"},{"internalType":"string","name":"siteID","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"enum AcquaDashboard.Unit","name":"unit","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"sitesToBenchmark","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"transferGovernment","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
+
+    async function init() {
+        // Check if MetaMask is installed
+        if (typeof window.ethereum !== 'undefined') {
+            const ethersProvider = new ethers.BrowserProvider(window.ethereum)
+            const signer = await ethersProvider.getSigner();
+
+            window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                    chainId: "0x33",
+                    rpcUrls: ["https://erpc.apothem.network"],
+                    chainName: "Apothem Testnet",
+                    nativeCurrency: {
+                        name: "TXDC",
+                        symbol: "TXDC",
+                        decimals: 18
+                    },
+                    blockExplorerUrls: ["https://apothem.xinfinscan.com/"]
+                }]
+            });
+
+            const erc20Contract = new ethers.Contract(contractAddress, erc20Abi, signer);
+
+            const acquaDashboardContract = new ethers.Contract(acquaDashboardAddress, dashboardAbi, signer);
+
+            // Get and display balance and totalSupply
+            const balance = await erc20Contract.balanceOf(await signer.getAddress());
+            document.getElementById('balance').innerText = 'Your Balance: ' + ethers.formatEther(balance);
+
+            const supply = await erc20Contract.totalSupply();
+            document.getElementById('totalSupply').innerText = 'Total Supply: ' + ethers.formatEther(supply);
+
+            const remaining = await acquaDashboardContract.remaining(await signer.getAddress());
+            document.getElementById('remaining').innerText = 'Remaining: ' + remaining;
+
+            const pullDataByCompany = await acquaDashboardContract.pullDataByCompany(await signer.getAddress());
+            document.getElementById('pullDataByCompany').innerText = 'Data: ' + pullDataByCompany;
+        } else {
+            alert('Please install MetaMask to use this application.');
+        }
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+export const ACQUATOKEN_CONTRACT_ADDRESS =
+  '0x9AeFc71ca54a7752CC3A00362b7F0CAa8E69b959';
+export const ACQUADASHBOARD_CONTRACT_ADDRESS =
+  '0x6C3e46B9A99De23A3873BE76e53734C73e4d7923';
+export const ACQUATOKEN_ABI = [
+  {
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    inputs: [],
+    name: 'getNumber',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
+export const ACQUADASHBOARD_ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_acquaAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_government',
+        type: 'address',
+      },
+      {
+        internalType: 'string[]',
+        name: '_sites',
+        type: 'string[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: '_benchmarks',
+        type: 'uint256[]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'company',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'sensorID',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'message',
+        type: 'string',
+      },
+    ],
+    name: 'PushData',
+    type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'companies',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'companyToSensorData',
+    outputs: [
+      {
+        internalType: 'string',
+        name: 'sensorID',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'siteID',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: 'value',
+        type: 'uint256',
+      },
+      {
+        internalType: 'enum AcquaDashboard.Unit',
+        name: 'unit',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'a',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'b',
+        type: 'string',
+      },
+    ],
+    name: 'compareStrings',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'governmentAddress',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_companyAddress',
+        type: 'address',
+      },
+    ],
+    name: 'pullDataByCompany',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'sensorID',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'siteID',
+            type: 'string',
+          },
+          {
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum AcquaDashboard.Unit',
+            name: 'unit',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct AcquaDashboard.SensorData[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_sensorID',
+        type: 'string',
+      },
+    ],
+    name: 'pullDataBySensorID',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'sensorID',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'siteID',
+            type: 'string',
+          },
+          {
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum AcquaDashboard.Unit',
+            name: 'unit',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct AcquaDashboard.SensorData[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_sensorID',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: '_siteID',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '_value',
+        type: 'uint256',
+      },
+      {
+        internalType: 'string',
+        name: '_unit',
+        type: 'string',
+      },
+    ],
+    name: 'pushData',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'remaining',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: '',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'sensorIDToSensorData',
+    outputs: [
+      {
+        internalType: 'string',
+        name: 'sensorID',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'siteID',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: 'value',
+        type: 'uint256',
+      },
+      {
+        internalType: 'enum AcquaDashboard.Unit',
+        name: 'unit',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    name: 'sitesToBenchmark',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'transferGovernment',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+];
